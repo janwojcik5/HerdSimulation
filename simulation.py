@@ -1,12 +1,13 @@
 #import simpy
 import random
 import pygame
+import math
 
-MAX_POSITION_X=-100
-MIN_POSITION_X=100
+MAX_POSITION_X=1024
+MIN_POSITION_X=0
 
-MAX_POSITION_Y=-100
-MIN_POSITION_Y=100
+MAX_POSITION_Y=768
+MIN_POSITION_Y=0
 
 MAX_VELOCITY=-5
 MIN_VELOCITY=5
@@ -54,17 +55,22 @@ class World(object):
       self.boids.append(Boid(position,velocity))    
   
   def draw_boids(self):
-   
-    pass
+    for i in self.boids:
+      
 
 #Klasa reprezentujaca okno, w ktorym wyswietlamy boidy
 class Display():
   
   def __init__(self):
-    self.screen=pygame.display.set_mode((1024,768))
+    self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X),(MAX_POSITION_Y-MIN_POSITION_Y))
     
   def draw_object(self,obj,object_image):
-    pass
+    pygame_image=pygame.image.load(object_image)
+    if obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0:
+      pygame.transform.rotate(pygame_image,math.atan2(obj.velocity[0],obj.velocity[1])
+    screen.blit(pygame_image,(obj.position[0],obj.position[1]))
+    pygame.display.flip()
+    
     
 #glowna petla: tu sie bedzie wszystko wykonywalo
 def loop(env):
