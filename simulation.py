@@ -72,13 +72,16 @@ class Display():
   
   def __init__(self):
     self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X,MAX_POSITION_Y-MIN_POSITION_Y))
+    #flyweight pattern
+    self.image_dictionary={}
     
   def draw_object(self,obj,object_image):
-    pygame_image=pygame.image.load(object_image)
+    if not object_image in self.image_dictionary:
+      self.image_dictionary[object_image]=pygame.image.load(object_image)
     if (obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0):
-      pygame_image=pygame.transform.rotate(pygame_image,(180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))
-      #print math.atan2(obj.velocity[1],obj.velocity[0])
-    self.screen.blit(pygame_image,(obj.position[0],obj.position[1]))
+      rotated=pygame.transform.rotate(self.image_dictionary[object_image],-90-(180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))
+      print str((180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))+" "+str(obj.velocity[1])+" "+str(obj.velocity[0])
+    self.screen.blit(rotated,(obj.position[0],obj.position[1]))
     pygame.display.flip()
 
   def clean_screen(self):
