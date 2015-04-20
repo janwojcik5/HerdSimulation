@@ -12,7 +12,8 @@ MIN_POSITION_Y=0
 MAX_VELOCITY=-5
 MIN_VELOCITY=5
 
-  
+white = 255,255,255
+
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
@@ -58,6 +59,7 @@ class World(object):
       self.boids.append(Boid(position,velocity))    
   
   def draw_boids(self):
+    self.display.clean_screen()
     for i in self.boids:
       self.display.draw_object(i,"./img/boid-red.png")
 
@@ -72,6 +74,10 @@ class Display():
     if (obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0):
       pygame.transform.rotate(pygame_image,math.atan2(obj.velocity[0],obj.velocity[1]))
     self.screen.blit(pygame_image,(obj.position[0],obj.position[1]))
+    pygame.display.flip()
+
+  def clean_screen(self):
+    self.screen.fill(white)
     pygame.display.flip()
     
     
