@@ -2,6 +2,7 @@
 import random
 import pygame
 import math
+import time
 
 MAX_POSITION_X=1024
 MIN_POSITION_X=0
@@ -57,6 +58,8 @@ class World(object):
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
       self.boids.append(Boid(position,velocity))    
+      #
+      #
   
   def draw_boids(self):
     self.display.clean_screen()
@@ -72,7 +75,8 @@ class Display():
   def draw_object(self,obj,object_image):
     pygame_image=pygame.image.load(object_image)
     if (obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0):
-      pygame.transform.rotate(pygame_image,math.atan2(obj.velocity[0],obj.velocity[1]))
+      pygame_image=pygame.transform.rotate(pygame_image,(180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))
+      #print math.atan2(obj.velocity[1],obj.velocity[0])
     self.screen.blit(pygame_image,(obj.position[0],obj.position[1]))
     pygame.display.flip()
 
@@ -86,6 +90,7 @@ def loop(world):
   while True:
     world.move_all_boids_to_new_positions()
     world.draw_boids()
+    time.sleep(1)
   
 world=World(5,Display())
 print world
