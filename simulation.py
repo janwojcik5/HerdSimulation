@@ -48,16 +48,20 @@ class World(object):
     return str(self.boids)
   
   def move_all_boids_to_new_positions(self):
-    self.boids=[]
-    for i in range(self.number_of_boids):
-      position=[]
-      position.append(random.uniform(MIN_POSITION_X,MAX_POSITION_X))
-      position.append(random.uniform(MIN_POSITION_Y,MAX_POSITION_Y))
-      velocity=[]
-      velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
-      velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
-      self.boids.append(Boid(position,velocity))    
-  
+    for boid in self.boids:
+      newX = boid.position[0]+boid.velocity[0]
+      if 0 > newX or newX > MAX_POSITION_X:
+        newX = boid.position[0]-boid.velocity[0]
+        boid.velocity[0]= -boid.velocity[0]
+      boid.position[0] = newX 
+
+      newY = boid.position[1]+boid.velocity[1]
+      if 0 > newY or newY > MAX_POSITION_Y:
+        newY = boid.position[1]-boid.velocity[1]
+        boid.velocity[1]= -boid.velocity[1]
+      boid.position[1] = newY 
+
+       
   def draw_boids(self):
     self.display.clean_screen()
     for i in self.boids:
