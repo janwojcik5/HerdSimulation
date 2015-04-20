@@ -12,6 +12,7 @@ MIN_POSITION_Y=0
 MAX_VELOCITY=-5
 MIN_VELOCITY=5
 
+  
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
@@ -39,6 +40,8 @@ class World(object):
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
       self.boids.append(Boid(position,velocity))
+    self.display=display
+      
       
   def __str__(self):
     return str(self.boids)
@@ -47,8 +50,8 @@ class World(object):
     self.boids=[]
     for i in range(self.number_of_boids):
       position=[]
-      position.append(random.uniform(MIN_POSITION,MAX_POSITION))
-      position.append(random.uniform(MIN_POSITION,MAX_POSITION))
+      position.append(random.uniform(MIN_POSITION_X,MAX_POSITION_X))
+      position.append(random.uniform(MIN_POSITION_Y,MAX_POSITION_Y))
       velocity=[]
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
       velocity.append(random.uniform(MIN_VELOCITY,MAX_VELOCITY))
@@ -56,25 +59,29 @@ class World(object):
   
   def draw_boids(self):
     for i in self.boids:
-      
+      self.display.draw_object(i,"./img/boid-red.png")
 
 #Klasa reprezentujaca okno, w ktorym wyswietlamy boidy
 class Display():
   
   def __init__(self):
-    self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X),(MAX_POSITION_Y-MIN_POSITION_Y))
+    self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X,MAX_POSITION_Y-MIN_POSITION_Y))
     
   def draw_object(self,obj,object_image):
     pygame_image=pygame.image.load(object_image)
-    if obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0:
-      pygame.transform.rotate(pygame_image,math.atan2(obj.velocity[0],obj.velocity[1])
-    screen.blit(pygame_image,(obj.position[0],obj.position[1]))
+    if (obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0):
+      pygame.transform.rotate(pygame_image,math.atan2(obj.velocity[0],obj.velocity[1]))
+    self.screen.blit(pygame_image,(obj.position[0],obj.position[1]))
     pygame.display.flip()
     
     
 #glowna petla: tu sie bedzie wszystko wykonywalo
-def loop(env):
-  pass
+def loop(world):
+  while True:
+    world.move_all_boids_to_new_positions()
+    world.draw_boids()
   
-herd=Herd(5)
-print herd
+world=World(5,Display())
+print world
+
+loop(world)
