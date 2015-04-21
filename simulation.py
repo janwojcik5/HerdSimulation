@@ -27,6 +27,11 @@ class Boid(object):
   
   def __repr__(self):
     return str(self.position)+" "+str(self.velocity)
+  
+  #sprawdzanie, czy dwa boidy leza w swoim zasiegu
+  def in_range(self,another_boid):
+    #tymczasowe rozwiazanie
+    return True
     
 class World(object):
   
@@ -50,6 +55,12 @@ class World(object):
   
   def move_all_boids_to_new_positions(self):
     for boid in self.boids:
+      
+      #kazda z funkcji zwraca tuple ze skladowymi x i y predkosci
+      rule1_velocity=rule1(boid)
+      rule2_velocity=rule2(boid)
+      rule3_velocity=rule3(boid)
+      
       newX = boid.position[0]+boid.velocity[0]
       if 0 > newX or newX > MAX_POSITION_X:
         newX = boid.position[0]-boid.velocity[0]
@@ -62,6 +73,15 @@ class World(object):
         boid.velocity[1]= -boid.velocity[1]
       boid.position[1] = newY 
 
+  def rule1(self,boid):
+    pass
+  
+  def rule2(self,boid):
+    pass
+  
+  def rule3(self,boid):
+    pass
+  
   def draw_boids(self):
     self.display.clean_screen()
     for i in self.boids:
