@@ -18,9 +18,10 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
-  def __init__(self,position,velocity):
+  def __init__(self,position,velocity,sight_range=100):
     self.position=position
     self.velocity=velocity
+    self.sight_range=sight_range
     
   def __str__(self):
     return str(self.position)+" "+str(self.velocity)
@@ -74,7 +75,8 @@ class World(object):
       boid.position[1] = newY 
 
   def rule1(self,boid):
-    pass
+    count=0
+    
   
   def rule2(self,boid):
     pass
