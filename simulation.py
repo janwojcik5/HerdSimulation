@@ -3,6 +3,7 @@ import random
 import pygame
 import math
 import time
+from pygame.locals import *
 
 MAX_POSITION_X=1024
 MIN_POSITION_X=0
@@ -31,7 +32,7 @@ class Boid(object):
   
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
-    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < sight_range:
+    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < self.sight_range:
       return True
     return False
     
@@ -67,7 +68,7 @@ class World(object):
       print rule2_velocity
 
       
-      newVelocityX = boid.velocity[0]+rule1_velocity[0]# + rule2_velocity[0]+rule1_velocity[0]
+      newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule3_velocity[0]
       newX = boid.position[0]+newVelocityX
       if 0 > newX or newX > MAX_POSITION_X:
         newX = boid.position[0]- newVelocityX
@@ -75,7 +76,7 @@ class World(object):
       boid.position[0] = newX
       boid.velocity[0] = newVelocityX
 
-      newVelocityY = boid.velocity[1]+rule1_velocity[1]# + rule2_velocity[1]+rule1_velocity[1]
+      newVelocityY = boid.velocity[1]+rule1_velocity[1]+rule3_velocity[1]
       newY = boid.position[1] + newVelocityY 
       if 0 > newY or newY > MAX_POSITION_Y:
         newY = boid.position[1]- newVelocityY
@@ -112,7 +113,22 @@ class World(object):
     return c
 
   def rule3(self,boid):
-    pass
+    count=0.0
+    s=[0.0,0.0]
+    for boid2 in self.boids:
+      if boid.in_range(boid2):
+	       s[0]+=boid2.velocity[0]
+	       s[1]+=boid2.velocity[1]
+	       count+=1.0
+    if count == 0.0:
+      return [0.0,0.0]
+    s[0]/=count
+    s[1]/=count
+    s[0]-=boid.position[0]
+    s[1]-=boid.position[1]
+    s[0]/=500
+    s[1]/=500
+    return s
   
   def draw_boids(self):
     self.display.clean_screen()
@@ -123,7 +139,7 @@ class World(object):
 class Display():
   
   def __init__(self):
-    self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X,MAX_POSITION_Y-MIN_POSITION_Y))
+    self.screen=pygame.display.set_mode((MAX_POSITION_X-MIN_POSITION_X,MAX_POSITION_Y-MIN_POSITION_Y),DOUBLEBUF)
     #flyweight pattern
     self.image_dictionary={}
     
