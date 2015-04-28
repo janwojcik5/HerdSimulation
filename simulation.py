@@ -30,8 +30,9 @@ class Boid(object):
   
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
-    #tymczasowe rozwiazanie
-    return True
+    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < 30:
+      return True
+    return False
     
 class World(object):
   
@@ -62,13 +63,13 @@ class World(object):
       print rule2_velocity
       rule3_velocity=self.rule3(boid)
       
-      newX = boid.position[0]+boid.velocity[0]
+      newX = boid.position[0]+boid.velocity[0]+rule2_velocity[0]
       if 0 > newX or newX > MAX_POSITION_X:
         newX = boid.position[0]-boid.velocity[0]
         boid.velocity[0]= -boid.velocity[0]
       boid.position[0] = newX 
 
-      newY = boid.position[1]+boid.velocity[1]
+      newY = boid.position[1]+boid.velocity[1]+rule2_velocity[1]
       if 0 > newY or newY > MAX_POSITION_Y:
         newY = boid.position[1]-boid.velocity[1]
         boid.velocity[1]= -boid.velocity[1]
