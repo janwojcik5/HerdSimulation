@@ -18,10 +18,9 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
-  def __init__(self,position,velocity,sight_range=100):
+  def __init__(self,position,velocity):
     self.position=position
     self.velocity=velocity
-    self.sight_range=sight_range
     
   def __str__(self):
     return str(self.position)+" "+str(self.velocity)
@@ -58,9 +57,10 @@ class World(object):
     for boid in self.boids:
       
       #kazda z funkcji zwraca tuple ze skladowymi x i y predkosci
-      rule1_velocity=rule1(boid)
-      rule2_velocity=rule2(boid)
-      rule3_velocity=rule3(boid)
+      rule1_velocity=self.rule1(boid)
+      rule2_velocity=self.rule2(boid)
+      print rule2_velocity
+      rule3_velocity=self.rule3(boid)
       
       newX = boid.position[0]+boid.velocity[0]
       if 0 > newX or newX > MAX_POSITION_X:
@@ -75,12 +75,17 @@ class World(object):
       boid.position[1] = newY 
 
   def rule1(self,boid):
-    count=0
-    
-  
-  def rule2(self,boid):
     pass
   
+  def rule2(self,boid):
+    c = [0,0];
+    for another_boid in self.boids:
+      if another_boid != boid:
+        if boid.in_range(another_boid):
+          c[0] = c[0] - ( another_boid.position[0]-boid.position[0])
+          c[1] = c[1] - ( another_boid.position[1]-boid.position[1])
+    return c
+
   def rule3(self,boid):
     pass
   
@@ -116,7 +121,7 @@ def loop(world):
   while True:
     world.move_all_boids_to_new_positions()
     world.draw_boids()
-    time.sleep(1)
+    # time.sleep(0.1)
   
 world=World(5,Display())
 print world
