@@ -128,9 +128,12 @@ class Display():
 #glowna petla: tu sie bedzie wszystko wykonywalo
 def loop(world):
   while True:
+    for event in pygame.event.get():
+      if event.type==pygame.QUIT:
+	pygame.quit()
     world.move_all_boids_to_new_positions()
     world.draw_boids()
-    # time.sleep(0.1)
+    time.sleep(0.1)
   
 world=World(5,Display())
 print world
