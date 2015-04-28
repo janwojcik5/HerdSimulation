@@ -18,9 +18,10 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
-  def __init__(self,position,velocity):
+  def __init__(self,position,velocity,sight_range=100):
     self.position=position
     self.velocity=velocity
+    self.sight_range=sight_range
     
   def __str__(self):
     return str(self.position)+" "+str(self.velocity)
@@ -30,7 +31,7 @@ class Boid(object):
   
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
-    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < 100:
+    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < sight_range:
       return True
     return False
     
