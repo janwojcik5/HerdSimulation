@@ -76,7 +76,16 @@ class World(object):
       boid.position[1] = newY 
 
   def rule1(self,boid):
-    pass
+    count=0.0
+    s=[0.0,0.0]
+    for boid2 in self.boids:
+      if boid.in_range(boid2):
+	s[0]+=boid2.position[0]
+	s[1]+=boid2.position[1]
+	count+=1.0
+    s[0]/=count
+    s[1]/=count
+    return s
   
   def rule2(self,boid):
     c = [0,0];
