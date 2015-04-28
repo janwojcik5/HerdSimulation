@@ -60,35 +60,45 @@ class World(object):
       #kazda z funkcji zwraca tuple ze skladowymi x i y predkosci
       rule1_velocity=self.rule1(boid)
       rule2_velocity=self.rule2(boid)
-      print rule2_velocity
       rule3_velocity=self.rule3(boid)
-      
-      newX = boid.position[0]+boid.velocity[0]+rule2_velocity[0]
-      if 0 > newX or newX > MAX_POSITION_X:
-        newX = boid.position[0]-boid.velocity[0]
-        boid.velocity[0]= -boid.velocity[0]
-      boid.position[0] = newX 
 
-      newY = boid.position[1]+boid.velocity[1]+rule2_velocity[1]
+      # print rule1_velocity
+      print rule2_velocity
+
+      
+      newVelocityX = boid.velocity[0] #+ rule2_velocity[0]+rule1_velocity[0]
+      newX = boid.position[0]+newVelocityX
+      if 0 > newX or newX > MAX_POSITION_X:
+        newX = boid.position[0]- newVelocityX
+        newVelocityX=  -newVelocityX
+      boid.position[0] = newX
+      boid.velocity[0] = newVelocityX
+
+      newVelocityY = boid.velocity[1]# + rule2_velocity[1]+rule1_velocity[1]
+      newY = boid.position[1] + newVelocityY 
       if 0 > newY or newY > MAX_POSITION_Y:
-        newY = boid.position[1]-boid.velocity[1]
-        boid.velocity[1]= -boid.velocity[1]
+        newY = boid.position[1]- newVelocityY
+        newVelocityY= -newVelocityY
       boid.position[1] = newY 
+      boid.velocity[1] = newVelocityY
+
 
   def rule1(self,boid):
     count=0.0
     s=[0.0,0.0]
     for boid2 in self.boids:
       if boid.in_range(boid2):
-	s[0]+=boid2.position[0]
-	s[1]+=boid2.position[1]
-	count+=1.0
+	       s[0]+=boid2.position[0]
+	       s[1]+=boid2.position[1]
+	       count+=1.0
+    if count == 0.0:
+      return [0.0,0.0]
     s[0]/=count
     s[1]/=count
     return s
   
   def rule2(self,boid):
-    c = [0,0];
+    c = [0,0]
     for another_boid in self.boids:
       if another_boid != boid:
         if boid.in_range(another_boid):
@@ -117,7 +127,7 @@ class Display():
       self.image_dictionary[object_image]=pygame.image.load(object_image)
     if (obj.velocity[0]!=0.0 and obj.velocity[1]!=0.0):
       rotated=pygame.transform.rotate(self.image_dictionary[object_image],-90-(180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))
-      print str((180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))+" "+str(obj.velocity[1])+" "+str(obj.velocity[0])
+      # print str((180/math.pi)*math.atan2(obj.velocity[1],obj.velocity[0]))+" "+str(obj.velocity[1])+" "+str(obj.velocity[0])
     self.screen.blit(rotated,(obj.position[0],obj.position[1]))
     pygame.display.flip()
 
@@ -131,9 +141,9 @@ def loop(world):
   while True:
     world.move_all_boids_to_new_positions()
     world.draw_boids()
-    # time.sleep(0.1)
+    time.sleep(0.1)
   
 world=World(5,Display())
-print world
+# print world
 
 loop(world)
