@@ -30,7 +30,7 @@ class Boid(object):
   
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
-    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < 30:
+    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < 100:
       return True
     return False
     
@@ -66,7 +66,7 @@ class World(object):
       print rule2_velocity
 
       
-      newVelocityX = boid.velocity[0] #+ rule2_velocity[0]+rule1_velocity[0]
+      newVelocityX = boid.velocity[0]+rule1_velocity[0]# + rule2_velocity[0]+rule1_velocity[0]
       newX = boid.position[0]+newVelocityX
       if 0 > newX or newX > MAX_POSITION_X:
         newX = boid.position[0]- newVelocityX
@@ -74,7 +74,7 @@ class World(object):
       boid.position[0] = newX
       boid.velocity[0] = newVelocityX
 
-      newVelocityY = boid.velocity[1]# + rule2_velocity[1]+rule1_velocity[1]
+      newVelocityY = boid.velocity[1]+rule1_velocity[1]# + rule2_velocity[1]+rule1_velocity[1]
       newY = boid.position[1] + newVelocityY 
       if 0 > newY or newY > MAX_POSITION_Y:
         newY = boid.position[1]- newVelocityY
@@ -95,6 +95,10 @@ class World(object):
       return [0.0,0.0]
     s[0]/=count
     s[1]/=count
+    s[0]-=boid.position[0]
+    s[1]-=boid.position[1]
+    s[0]/=100
+    s[1]/=100
     return s
   
   def rule2(self,boid):
@@ -135,7 +139,7 @@ class Display():
     self.screen.fill(white)
     pygame.display.flip()
     
-    
+
 #glowna petla: tu sie bedzie wszystko wykonywalo
 def loop(world):
   while True:
