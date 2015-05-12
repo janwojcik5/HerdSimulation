@@ -18,7 +18,7 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi0
-  def __init__(self,position,velocity,sight_range=255):
+  def __init__(self,position,velocity,sight_range=224):
     self.position=position
     self.velocity=velocity
     self.sight_range=sight_range
@@ -38,7 +38,7 @@ class Boid(object):
 
   def is_tooClose(self,another_boid):
     if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2) 
-    	+ math.pow(self.position[1]-another_boid.position[1],2)) < 20:
+    	+ math.pow(self.position[1]-another_boid.position[1],2)) < 17:
       return True
     return False
     
@@ -105,14 +105,6 @@ class World(object):
     s[1]/=8
     return s
 
-  def random_rule(self,boid):
-    s=[0.0,0.0]
-    s[0]=random.uniform(MIN_VELOCITY/5,MAX_VELOCITY/5)
-    s[1]=random.uniform(MIN_VELOCITY/5,MAX_VELOCITY/5)
-    s[0]/=100	
-    s[1]/=100
-    return s    
-
   def move_all_boids_to_new_positions(self):
     for boid in self.boids:
       
@@ -120,20 +112,19 @@ class World(object):
       rule1_velocity=self.rule1(boid)
       rule2_velocity= self.rule2(boid)
       rule3_velocity=self.rule3(boid)
-     #random_rule_velocity = self.random_rule(boid)
       print rule1_velocity
       print rule2_velocity
       print rule3_velocity  
       print " "    
 
-      newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule2_velocity[0]+rule3_velocity[0]#+random_rule_velocity[0]
+      newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule2_velocity[0]+rule3_velocity[0]
       if abs(newVelocityX) > MAX_VELOCITY:
         newVelocityX= math.copysign(MAX_VELOCITY,newVelocityX) 
       newX = abs((boid.position[0]+newVelocityX)%MAX_POSITION_X)
       boid.position[0] = newX
       boid.velocity[0] = newVelocityX
 
-      newVelocityY = boid.velocity[1]+rule1_velocity[1]+rule2_velocity[1]+rule3_velocity[1]#+random_rule_velocity[1]
+      newVelocityY = boid.velocity[1]+rule1_velocity[1]+rule2_velocity[1]+rule3_velocity[1]
       if abs(newVelocityY) > MAX_VELOCITY:
         newVelocityY= math.copysign(MAX_VELOCITY,newVelocityY) 
       newY = boid.position[1] + newVelocityY 
@@ -141,7 +132,7 @@ class World(object):
       boid.position[1] = newY 
       boid.velocity[1] = newVelocityY
      
-      # print boid.velocity
+      print boid.velocity
 
 
   
@@ -181,7 +172,7 @@ def loop(world):
     world.draw_boids()
     time.sleep(0.1)
   
-world=World(30,Display())
+world=World(50,Display())
 # print world
 
 loop(world)
