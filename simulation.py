@@ -1,14 +1,13 @@
-#import simpy
 import random
 import pygame
 import math
 import time
 from pygame.locals import *
 
-MAX_POSITION_X=1024
+MAX_POSITION_X=800
 MIN_POSITION_X=0
 
-MAX_POSITION_Y=768
+MAX_POSITION_Y=600
 MIN_POSITION_Y=0
 
 MAX_VELOCITY=-5
@@ -19,7 +18,7 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi
-  def __init__(self,position,velocity,sight_range=100):
+  def __init__(self,position,velocity,sight_range=90):
     self.position=position
     self.velocity=velocity
     self.sight_range=sight_range
@@ -33,6 +32,11 @@ class Boid(object):
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
     if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < self.sight_range:
+      return True
+    return False
+
+  def is_tooClose(self,another_boid):
+    if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2)+math.pow(self.position[1]-another_boid.position[1],2)) < 35:
       return True
     return False
     
@@ -55,35 +59,6 @@ class World(object):
       
   def __str__(self):
     return str(self.boids)
-  
-  def move_all_boids_to_new_positions(self):
-    for boid in self.boids:
-      
-      #kazda z funkcji zwraca tuple ze skladowymi x i y predkosci
-      rule1_velocity=self.rule1(boid)
-      rule2_velocity=self.rule2(boid)
-      rule3_velocity=self.rule3(boid)
-
-      # print rule1_velocity
-      print rule2_velocity
-
-      
-      newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule3_velocity[0]
-      newX = boid.position[0]+newVelocityX
-      if 0 > newX or newX > MAX_POSITION_X:
-        newX = boid.position[0]- newVelocityX
-        newVelocityX=  -newVelocityX
-      boid.position[0] = newX
-      boid.velocity[0] = newVelocityX
-
-      newVelocityY = boid.velocity[1]+rule1_velocity[1]+rule3_velocity[1]
-      newY = boid.position[1] + newVelocityY 
-      if 0 > newY or newY > MAX_POSITION_Y:
-        newY = boid.position[1]- newVelocityY
-        newVelocityY= -newVelocityY
-      boid.position[1] = newY 
-      boid.velocity[1] = newVelocityY
-
 
   def rule1(self,boid):
     count=0.0
@@ -99,15 +74,15 @@ class World(object):
     s[1]/=count
     s[0]-=boid.position[0]
     s[1]-=boid.position[1]
-    s[0]/=100
-    s[1]/=100
+    s[0]/=90
+    s[1]/=90
     return s
   
   def rule2(self,boid):
     c = [0,0]
     for another_boid in self.boids:
       if another_boid != boid:
-        if boid.in_range(another_boid):
+        if boid.is_tooClose(another_boid):
           c[0] = c[0] - ( another_boid.position[0]-boid.position[0])
           c[1] = c[1] - ( another_boid.position[1]-boid.position[1])
     return c
@@ -126,9 +101,52 @@ class World(object):
     s[1]/=count
     s[0]-=boid.position[0]
     s[1]-=boid.position[1]
-    s[0]/=500
-    s[1]/=500
+    s[0]/=15
+    s[1]/=15
     return s
+
+  def random_rule(self,boid):
+    s=[0.0,0.0]
+    s[0]=random.uniform(MIN_VELOCITY,MAX_VELOCITY)
+    s[1]=random.uniform(MIN_VELOCITY,MAX_VELOCITY)
+    s[0]/=200
+    s[1]/=200
+    return s    
+
+  def move_all_boids_to_new_positions(self):
+    for boid in self.boids:
+      
+      #kazda z funkcji zwraca tuple ze skladowymi x i y predkosci
+      rule1_velocity=self.rule1(boid)
+      rule2_velocity=self.rule2(boid)
+      rule3_velocity=self.rule3(boid)
+      random_rule_velocity = self.random_rule(boid)
+      # print rule1_velocity
+      # print rule2_velocity
+
+      
+      newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule2_velocity[0]+rule3_velocity[0]+random_rule_velocity[0]
+      if abs(newVelocityX) > MAX_VELOCITY:
+        newVelocityX= math.copysign(MAX_VELOCITY,newVelocityX) 
+      newX = boid.position[0]+newVelocityX
+      if 0 > newX or newX > MAX_POSITION_X:
+        newX = boid.position[0]- newVelocityX
+        newVelocityX=  -newVelocityX
+      boid.position[0] = newX
+      boid.velocity[0] = newVelocityX
+
+      newVelocityY = boid.velocity[1]+rule1_velocity[1]+rule2_velocity[1]+rule3_velocity[1]+random_rule_velocity[1]
+      if abs(newVelocityY) > MAX_VELOCITY:
+        newVelocityY= math.copysign(MAX_VELOCITY,newVelocityY) 
+      newY = boid.position[1] + newVelocityY 
+      if 0 > newY or newY > MAX_POSITION_Y:
+        newY = boid.position[1]- newVelocityY
+        newVelocityY= -newVelocityY
+      boid.position[1] = newY 
+      boid.velocity[1] = newVelocityY
+      print boid.velocity
+
+
   
   def draw_boids(self):
     self.display.clean_screen()
@@ -154,7 +172,6 @@ class Display():
 
   def clean_screen(self):
     self.screen.fill(white)
-    pygame.display.flip()
     
 
 #glowna petla: tu sie bedzie wszystko wykonywalo
@@ -167,7 +184,7 @@ def loop(world):
     world.draw_boids()
     time.sleep(0.1)
   
-world=World(5,Display())
+world=World(20,Display())
 # print world
 
 loop(world)
