@@ -18,7 +18,7 @@ white = 255,255,255
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi0
-  def __init__(self,position,velocity,sight_range=224):
+  def __init__(self,position,velocity,sight_range=388):
     self.position=position
     self.velocity=velocity
     self.sight_range=sight_range
