@@ -4,25 +4,36 @@ import math
 import time
 from pygame.locals import *
 
+
+##CONSTANT 
 MAX_POSITION_X=800
 MIN_POSITION_X=0
-
 MAX_POSITION_Y=600
 MIN_POSITION_Y=0
 
-MAX_VELOCITY=5
-MIN_VELOCITY=-5
-
 white = 255,255,255
+
+#PARAMETERS
+
+MAX_VELOCITY=5
+SIGHT_RANGE=388
+TOO_CLOSE_RANGE=19
+
+RULE1_DIVIDER=100
+# RULE2_DIVIDER=100
+RULE3_DIVIDER=8
+
+
+MIN_VELOCITY=-MAX_VELOCITY
+
 
 class Boid(object):
   
   #pozycja i predkosc sa listami dwuelementowymi0
-  def __init__(self,position,velocity,sight_range=388):
+  def __init__(self,position,velocity):
     self.position=position
     self.velocity=velocity
-    self.sight_range=sight_range
-    
+   
   def __str__(self):
     return str(self.position)+" "+str(self.velocity)
   
@@ -32,13 +43,13 @@ class Boid(object):
   #sprawdzanie, czy dwa boidy leza w swoim zasiegu
   def in_range(self,another_boid):
     if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2) 
-    	+ math.pow(self.position[1]-another_boid.position[1],2)) < self.sight_range:
+    	+ math.pow(self.position[1]-another_boid.position[1],2)) < SIGHT_RANGE:
       return True
     return False
 
   def is_tooClose(self,another_boid):
     if math.sqrt(math.pow(self.position[0]-another_boid.position[0],2) 
-    	+ math.pow(self.position[1]-another_boid.position[1],2)) < 17:
+    	+ math.pow(self.position[1]-another_boid.position[1],2)) < TOO_CLOSE_RANGE:
       return True
     return False
     
@@ -76,8 +87,8 @@ class World(object):
     s[1]/=count
     s[0]-=boid.position[0]
     s[1]-=boid.position[1]
-    s[0]/=100
-    s[1]/=100
+    s[0]/=RULE1_DIVIDER
+    s[1]/=RULE1_DIVIDER
     return s
   
   def rule2(self,boid):
@@ -101,8 +112,8 @@ class World(object):
       return [0.0,0.0]
     s[0]/=count
     s[1]/=count
-    s[0]/=8
-    s[1]/=8
+    s[0]/=RULE3_DIVIDER
+    s[1]/=RULE3_DIVIDER
     return s
 
   def move_all_boids_to_new_positions(self):
@@ -112,10 +123,10 @@ class World(object):
       rule1_velocity=self.rule1(boid)
       rule2_velocity= self.rule2(boid)
       rule3_velocity=self.rule3(boid)
-      print rule1_velocity
-      print rule2_velocity
-      print rule3_velocity  
-      print " "    
+      # print rule1_velocity
+      # print rule2_velocity
+      # print rule3_velocity  
+      # print " "    
 
       newVelocityX = boid.velocity[0]+rule1_velocity[0]+rule2_velocity[0]+rule3_velocity[0]
       if abs(newVelocityX) > MAX_VELOCITY:
@@ -133,7 +144,6 @@ class World(object):
       boid.velocity[1] = newVelocityY
      
       print boid.velocity
-
 
   
   def draw_boids(self):
@@ -170,7 +180,7 @@ def loop(world):
 	pygame.quit()
     world.move_all_boids_to_new_positions()
     world.draw_boids()
-    time.sleep(0.1)
+    # time.sleep(0.1)
   
 world=World(50,Display())
 # print world
