@@ -24,6 +24,9 @@ RULE1_DIVIDER=100
 RULE3_DIVIDER=8
 
 
+WAIT_TIME=0.1
+
+
 MIN_VELOCITY=-MAX_VELOCITY
 
 
@@ -143,7 +146,7 @@ class World(object):
       boid.position[1] = newY 
       boid.velocity[1] = newVelocityY
      
-      print boid.velocity
+      # print boid.velocity
 
   
   def draw_boids(self):
@@ -177,12 +180,17 @@ def loop(world):
   while True:
     for event in pygame.event.get():
       if event.type==pygame.QUIT:
-	pygame.quit()
+	       pygame.quit()
     world.move_all_boids_to_new_positions()
     world.draw_boids()
-    # time.sleep(0.1)
-  
-world=World(50,Display())
-# print world
+    time.sleep(WAIT_TIME)
 
-loop(world)
+
+
+  
+def start():
+  world=World(50,Display())
+  loop(world)
+
+if __name__ == "__main__":
+    start()

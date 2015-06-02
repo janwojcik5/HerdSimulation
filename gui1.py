@@ -1,10 +1,17 @@
 from Tkinter import *
+import threading
+import simulation
 
+
+
+t = threading.Thread(target=simulation.start)
+t.daemon = True
+t.start()
 
 def set_velocity():
-    selection = "Value= " + str(velocity_value.get())
+    selection = "MAX VELOCITY = " + str(velocity_value.get())
+    simulation.MAX_VELOCITY = velocity_value.get()
     print selection
-
 
 
 def set_velocity1():
@@ -129,3 +136,5 @@ velocity_set_bt5.pack(side=LEFT)
 
 
 root.mainloop()
+
+
