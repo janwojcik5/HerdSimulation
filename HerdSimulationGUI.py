@@ -3,6 +3,12 @@ import threading
 import SimulationEngine
 
 def start_sim():
+	set_velocity()
+    	set_too_close()
+    	set_sight_range()
+    	set_angle_range()
+    	set_rule1()
+    	set_rule3()
     if not SimulationEngine.IS_RUNNING:
         SimulationEngine.IS_RUNNING = True
         t = threading.Thread(target=SimulationEngine.start)
