@@ -15,7 +15,7 @@ white = 255, 255, 255
 
 # PARAMETERS
 
-MAX_VELOCITY = 5
+MAX_VELOCITY = 3
 SIGHT_RANGE = 350
 TOO_CLOSE_RANGE = 20
 
@@ -189,7 +189,7 @@ def loop(world):
 
 
 def start():
-    world = World(60, Display())
+    world = World(72, Display())
     loop(world)
 
 
