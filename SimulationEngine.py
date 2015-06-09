@@ -188,7 +188,7 @@ def loop(world):
 
 
 def start():
-    world = World(50, Display())
+    world = World(30, Display())
     loop(world)
 
 
