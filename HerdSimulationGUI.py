@@ -30,6 +30,11 @@ def set_sight_range():
     SimulationEngine.SIGHT_RANGE = sight_range_value.get()
     print selection
 
+def set_angle_range():
+    selection = "SIGHT_ANGLE = " + str(sight_angle_value.get())
+    SimulationEngine.SEE_ANGLE = sight_angle_value.get()
+    print selection
+    
 
 def set_rule1():
     selection = "RULE1_DIVIDER = " + str(rule_1_val.get())
@@ -51,6 +56,7 @@ frame.pack()
 velocity_value = DoubleVar()
 to_close_val = DoubleVar()
 sight_range_value = DoubleVar()
+sight_angle_value = DoubleVar()
 rule_1_val = DoubleVar()
 rule_3_val = DoubleVar()
 
@@ -83,6 +89,24 @@ sight_range_scale.pack(side=LEFT)
 sight_range_scale.set(SimulationEngine.SIGHT_RANGE)
 
 sight_range_bt = Button(sight_range_frame, text="Set", command=set_sight_range)
+sight_range_bt.pack(side=LEFT)
+
+
+
+############################################################
+
+sight_angle_frame = Frame(frame)
+sight_angle_frame.pack(side=TOP)
+
+sight_angle_label = Label(sight_angle_frame, text="Sight Angle")
+sight_angle_label.pack(side=LEFT)
+
+sight_angle_scale = Scale(sight_angle_frame, from_=0, to=360, orient=HORIZONTAL, length=300,
+                          variable=sight_angle_value)
+sight_angle_scale.pack(side=LEFT)
+sight_angle_scale.set(SimulationEngine.SEE_ANGLE)
+
+sight_range_bt = Button(sight_angle_frame, text="Set", command=set_angle_range)
 sight_range_bt.pack(side=LEFT)
 
 ############################################################

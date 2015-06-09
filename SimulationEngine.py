@@ -22,6 +22,8 @@ TOO_CLOSE_RANGE = 20
 RULE1_DIVIDER = 100
 RULE3_DIVIDER = 8
 
+SEE_ANGLE = 120
+
 WAIT_TIME = 0.1
 
 MIN_VELOCITY = -MAX_VELOCITY
@@ -40,16 +42,25 @@ class Boid(object):
     def __repr__(self):
         return str(self.position) + " " + str(self.velocity)
 
+    def is_in_angle(self,another_boid):
+    	k1 = math.atan2(self.velocity[1],self.velocity[0])
+     	k2 = math.atan2((another_boid.position[1]-self.position[1]),(another_boid.position[0]-self.position[0]))
+
+    	if abs(k1-k2) < SEE_ANGLE:
+    		return True
+    	return False
+
+
     # sprawdzanie, czy dwa boidy leza w swoim zasiegu
     def in_range(self, another_boid):
         if math.sqrt(math.pow(self.position[0] - another_boid.position[0], 2)
-                + math.pow(self.position[1] - another_boid.position[1], 2)) < SIGHT_RANGE:
+                + math.pow(self.position[1] - another_boid.position[1], 2)) < SIGHT_RANGE and self.is_in_angle(another_boid) :
             return True
         return False
 
     def is_tooClose(self, another_boid):
         if math.sqrt(math.pow(self.position[0] - another_boid.position[0], 2)
-                + math.pow(self.position[1] - another_boid.position[1], 2)) < TOO_CLOSE_RANGE:
+                + math.pow(self.position[1] - another_boid.position[1], 2)) < TOO_CLOSE_RANGE and self.is_in_angle(another_boid):
             return True
         return False
 
@@ -126,14 +137,14 @@ class World(object):
 
             new_velocity_x = boid.velocity[0] + rule1_velocity[0] + rule2_velocity[0] + rule3_velocity[0]
             if abs(new_velocity_x) > MAX_VELOCITY:
-                new_velocity_x = math.copysign(MAX_VELOCITY, new_velocity_x)
+                new_velocity_x = math.copysign(MAX_VELOCITY, new_velocity_x) * 0.75
             new_x = abs((boid.position[0] + new_velocity_x) % MAX_POSITION_X)
             boid.position[0] = new_x
             boid.velocity[0] = new_velocity_x
 
             new_velocity_y = boid.velocity[1] + rule1_velocity[1] + rule2_velocity[1] + rule3_velocity[1]
             if abs(new_velocity_y) > MAX_VELOCITY:
-                new_velocity_y = math.copysign(MAX_VELOCITY, new_velocity_y)
+                new_velocity_y = math.copysign(MAX_VELOCITY, new_velocity_y) * 0.75
             new_y = abs((boid.position[1] + new_velocity_y) % MAX_POSITION_Y)
             boid.position[1] = new_y
             boid.velocity[1] = new_velocity_y
