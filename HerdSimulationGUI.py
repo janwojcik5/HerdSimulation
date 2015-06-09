@@ -3,7 +3,7 @@ import threading
 import SimulationEngine
 
 def start_sim():
-	set_velocity()
+    set_velocity()
     set_too_close()
     set_sight_range()
     set_angle_range()

@@ -6,9 +6,9 @@ from pygame.locals import *
 
 # CONSTANTS
 
-MAX_POSITION_X = 800
+MAX_POSITION_X = 900
 MIN_POSITION_X = 0
-MAX_POSITION_Y = 600
+MAX_POSITION_Y = 700
 MIN_POSITION_Y = 0
 
 white = 255, 255, 255
@@ -154,6 +154,7 @@ class World(object):
         self.display.clean_screen()
         for i in self.boids:
             self.display.draw_object(i, "./img/boid-red.png")
+        pygame.display.flip()
 
 
 # Klasa reprezentujaca okno, w ktorym wyswietlamy boidy
@@ -171,7 +172,7 @@ class Display():
             rotated = pygame.transform.rotate(self.image_dictionary[object_image],
                                               -90 - (180 / math.pi) * math.atan2(obj.velocity[1], obj.velocity[0]))
         self.screen.blit(rotated, (obj.position[0], obj.position[1]))
-        pygame.display.flip()
+        
 
     def clean_screen(self):
         self.screen.fill(white)
@@ -188,7 +189,7 @@ def loop(world):
 
 
 def start():
-    world = World(30, Display())
+    world = World(60, Display())
     loop(world)
 
 
