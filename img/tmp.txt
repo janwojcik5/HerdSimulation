@@ -1,7 +1,0 @@
-velocity
-
-sight range
-
-tooClose_distance
-
-wagi poszczeoglnych metod
